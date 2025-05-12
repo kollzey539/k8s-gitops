@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hash-store-rigettidemo
+  namespace: argocd
+spec:
+  project: default
+
+  sources:
+    - repoURL: https://charts.rigettidemo.com
+      chart: hash-store
+      targetRevision: 0.1.2
+      helm:
+        releaseName: hash-store
+        valueFiles:
+          - $values/hash-store/values.yaml
+    - repoURL: https://github.com/kollzey539/values.git
+      targetRevision: main
+      ref: values
+
+  destination:
+    name: in-cluster
+    namespace: rigetti-demo
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+  createNamespace: true
